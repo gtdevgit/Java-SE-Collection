@@ -10,4 +10,8 @@ public class Country {
     public String getName() {
         return name;
     }
+
+    public int compare(Country c){
+        return this.name.compareToIgnoreCase(c.name);
+    }
 }

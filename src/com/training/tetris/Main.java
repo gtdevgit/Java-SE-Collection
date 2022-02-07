@@ -5,6 +5,23 @@ import java.util.function.UnaryOperator;
 
 public class Main {
 
+    private static void populate(List<String> lst){
+        lst.clear();
+        lst.add("France");
+        lst.add("Allemagne");
+        lst.add("USA");
+        lst.add("Chine");
+    }
+
+    private static void populateC(List<Country> lc){
+        lc.clear();
+        lc.add(new Country("France"));
+        lc.add(new Country("Royaume-Uni de Grande-Bretagne"));
+        lc.add(new Country("Zimbabwe"));
+        lc.add(new Country("Allemagne"));
+    }
+
+
     private static void afficher(List<String> lst){
         if (lst.size() > 0)
             for (String s : lst)
@@ -25,10 +42,7 @@ public class Main {
         List<String> countries = new ArrayList<>();
 
         System.out.println("*** 1 : afficher ***");
-        countries.add("France");
-        countries.add("Allemagne");
-        countries.add("USA");
-        countries.add("Chine");
+        populate(countries);
         afficher(countries);
 
         System.out.println("*** 2 : clear ***");
@@ -36,10 +50,7 @@ public class Main {
         afficher(countries);
 
         System.out.println("*** 3 : remplacer ***");
-        countries.add("France");
-        countries.add("Allemagne");
-        countries.add("USA");
-        countries.add("Chine");
+        populate(countries);
         String pays = "Belgique";
         countries.set(1, pays);
         afficher(countries);
@@ -101,12 +112,9 @@ public class Main {
         countries.sort((o1, o2) -> o1.compareTo(o2));
         afficher(countries);
 
-        System.out.println("*** 8 : Classe County");
+        System.out.println("*** 8 : Classe County + 'in ligne' comparator");
         List<Country> lc = new ArrayList<Country>();
-        lc.add(new Country("France"));
-        lc.add(new Country("Royaume-Uni de Grande-Bretagne"));
-        lc.add(new Country("Zimbabwe"));
-        lc.add(new Country("Allemagne"));
+        populateC(lc);
 
         lc.sort(new Comparator<Country>() {
             @Override
@@ -119,5 +127,28 @@ public class Main {
         System.out.println("*** 8 : Classe County + CountryComparator");
         lc.sort(new CountryComparator());
         afficherC(lc);
+
+        System.out.println("*** 8 : Classe County + Country::compare");
+        populateC(lc);
+        lc.sort(Country::compare);
+        afficherC(lc);
+
+        System.out.println("*** 8 : Classe County + nested class comparator");
+        populateC(lc);
+        Collections.sort( lc, new InnerCountryComparator() );
+        afficherC(lc);
+
+        System.out.println("*** 8 : Classe County + approche fonctionelle");
+        populateC(lc);
+        Collections.sort(lc, Comparator.comparing(country -> country.getName()));
+        afficherC(lc);
+
+    }
+
+    public static class InnerCountryComparator implements  Comparator<Country>{
+        @Override
+        public int compare(Country o1, Country o2) {
+            return o1.getName().compareToIgnoreCase(o2.getName());
+        }
     }
 }
